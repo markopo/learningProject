@@ -1,7 +1,6 @@
 package com.example.learningproject.controllers;
 
 import com.example.learningproject.dto.StudentDto;
-import com.example.learningproject.model.Student;
 import com.example.learningproject.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

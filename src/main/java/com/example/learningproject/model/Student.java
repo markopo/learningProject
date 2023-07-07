@@ -3,15 +3,18 @@ package com.example.learningproject.model;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "students")
+@Table(name = "STUDENTS")
 public class Student {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "ID")
     private Integer id;
 
+    @Column(name = "NAME")
     private String name;
 
+    @Column(name = "EMAIL")
     private String email;
 
     public Integer getId() {

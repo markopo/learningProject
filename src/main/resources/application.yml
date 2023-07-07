@@ -12,3 +12,11 @@ spring:
     hibernate:
       ddl-auto: create
     defer-datasource-initialization: true
+    open-in-view: false
+  thymeleaf:
+    cache: false
+    enabled: true
+    prefix: classpath:/templates/
+    suffix: .html
+  application:
+    name: Learning Project Spring Boot 3
