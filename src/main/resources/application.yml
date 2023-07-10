@@ -21,6 +21,6 @@ spring:
   application:
     name: Learning Project Spring Boot 3
   security:
-    user:
-      name: marko
-      password: test123
+#    user:
+#      name: marko
+#      password: test123
