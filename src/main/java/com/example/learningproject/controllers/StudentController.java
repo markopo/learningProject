@@ -4,6 +4,7 @@ import com.example.learningproject.dto.StudentDto;
 import com.example.learningproject.exceptions.StudentNotFoundException;
 import com.example.learningproject.repository.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.learningproject.model.Student;
 
@@ -68,6 +69,35 @@ public class StudentController {
         var createStudent = new Student(newStudent.name(), newStudent.email());
         createStudent.setId(0);
         var student = this.studentRepository.save(createStudent);
+        return new StudentDto(student.getId(), student.getName(), student.getEmail());
+    }
+
+    @DeleteMapping("/students/{id}")
+    public ResponseEntity delete(@PathVariable Integer id) {
+       var studentOptional = this.studentRepository.findById(id);
+
+        if(studentOptional.isEmpty()) {
+            throw new StudentNotFoundException("Student not found", null);
+        }
+
+        var student = studentOptional.get();
+        this.studentRepository.delete(student);
+
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/students/{id}")
+    public StudentDto updateStudent(@RequestBody StudentDto studentDto, @PathVariable Integer id) {
+        var studentOptional = this.studentRepository.findById(id);
+
+        if(studentOptional.isEmpty()) {
+            throw new StudentNotFoundException("Student not found", null);
+        }
+
+        var student = studentOptional.get();
+        student.setName(studentDto.name());
+        student.setEmail(studentDto.email());
+        this.studentRepository.save(student);
         return new StudentDto(student.getId(), student.getName(), student.getEmail());
     }
 }
