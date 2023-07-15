@@ -7,5 +7,20 @@
 <body>
 <h1>Hello !</h1>
 <p>Welcome to <span th:text="${appName}">Our App</span></p>
+<div>
+    <form method="post" action="http://localhost:8080/api/students">
+        <div>
+            <input type="text" name="name" required="required" >
+        </div>
+        <br />
+        <div>
+            <input type="text" name="name" required="required" >
+        </div>
+        <br />
+        <div>
+            <input type="submit" value="Create">
+        </div>
+    </form>
+</div>
 </body>
 </html>
