@@ -1,4 +1,4 @@
 package com.example.learningproject.dto;
 
-public record CourseDto(String courseCode, String description) {
+public record CourseDto(Integer id, String courseCode, String description) {
 }
