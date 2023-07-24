@@ -125,7 +125,7 @@ public class StudentControllerTest {
 
        var responseUpdated =  given()
                     .auth()
-                    .basic(USERNAME, PASSWORD) 
+                    .basic(USERNAME, PASSWORD)
                     .when()
                     .contentType(ContentType.JSON)
                     .body(new StudentDto(olaConny.id(), "morgan", "morgan@gmail.com"))
