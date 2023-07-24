@@ -11,11 +11,15 @@ public class StudentControllerTest {
 
     private static final String API_ROOT = "http://localhost:8080/api/students";
 
+    private static final String USERNAME = "mary";
+
+    private static final String PASSWORD = "test123";
+
     @Test
     public void whenGetAllStudents_thenOK() {
       given()
           .auth()
-          .basic("mary", "test123")
+          .basic(USERNAME, PASSWORD)
           .when()
           .get(API_ROOT)
           .then()
@@ -26,7 +30,7 @@ public class StudentControllerTest {
     public void whenGetById_thenOK() {
         given()
                 .auth()
-                .basic("mary", "test123")
+                .basic(USERNAME, PASSWORD)
                 .when()
                 .get(API_ROOT + "/1")
                 .then()
@@ -39,7 +43,7 @@ public class StudentControllerTest {
     public void whenFindByNamethenOK() {
         given()
                 .auth()
-                .basic("mary", "test123")
+                .basic(USERNAME, PASSWORD)
                 .when()
                 .get(API_ROOT + "/name/marko")
                 .then()
@@ -52,7 +56,7 @@ public class StudentControllerTest {
     public void whenFindByEmail_thenOK() {
         given()
                 .auth()
-                .basic("mary", "test123")
+                .basic(USERNAME, PASSWORD)
                 .when()
                 .get(API_ROOT + "/email/marko@gmail.com")
                 .then()
@@ -65,7 +69,7 @@ public class StudentControllerTest {
     public void whenPost_thenOK() {
         given()
                 .auth()
-                .basic("mary", "test123")
+                .basic(USERNAME, PASSWORD)
                 .when()
                 .contentType(ContentType.JSON)
                 .body(new StudentDto(0, "banan", "banan@gmail.com"))
@@ -77,7 +81,7 @@ public class StudentControllerTest {
 
         given()
             .auth()
-            .basic("mary", "test123")
+            .basic(USERNAME, PASSWORD)
             .when()
             .get(API_ROOT + "/name/banan")
             .then()
@@ -90,7 +94,7 @@ public class StudentControllerTest {
     public void whenDelete_thenOK() {
        var responseCreated =  given()
                                 .auth()
-                                .basic("mary", "test123")
+                                .basic(USERNAME, PASSWORD)
                                 .when()
                                 .contentType(ContentType.JSON)
                                 .body(new StudentDto(0, "ola-conny", "ola-conny@gmail.com"))
@@ -100,7 +104,7 @@ public class StudentControllerTest {
 
         given()
                 .auth()
-                .basic("susan", "test123")
+                .basic("susan", PASSWORD)
                 .when()
                 .delete(API_ROOT + "/" + olaConny.id())
                 .then()
@@ -111,7 +115,7 @@ public class StudentControllerTest {
     public void whenPut_thenOK() {
         var responseCreated =  given()
                 .auth()
-                .basic("mary", "test123")
+                .basic(USERNAME, PASSWORD)
                 .when()
                 .contentType(ContentType.JSON)
                 .body(new StudentDto(0, "ola-conny", "ola-conny@gmail.com"))
@@ -121,7 +125,7 @@ public class StudentControllerTest {
 
        var responseUpdated =  given()
                     .auth()
-                    .basic("susan", "test123")
+                    .basic(USERNAME, PASSWORD) 
                     .when()
                     .contentType(ContentType.JSON)
                     .body(new StudentDto(olaConny.id(), "morgan", "morgan@gmail.com"))
