@@ -19,6 +19,14 @@ public class Course {
     @Column(name = "DESCRIPTION")
     private String description;
 
+    public Course() {}
+
+    public Course(String courseCode, String title, String description) {
+        this.courseCode = courseCode;
+        this.title = title;
+        this.description = description;
+    }
+
     public Integer getId() {
         return id;
     }
@@ -49,5 +57,15 @@ public class Course {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public String toString() {
+        return "Course{" +
+                "id=" + id +
+                ", courseCode='" + courseCode + '\'' +
+                ", title='" + title + '\'' +
+                ", description='" + description + '\'' +
+                '}';
     }
 }
