@@ -1,4 +1,6 @@
 package com.example.learningproject.dto;
 
-public record StudentDto(Integer id, String name, String email) {
+import java.util.List;
+
+public record StudentDto(Integer id, String name, String email, List<CourseDto> courses) {
 }

@@ -11,6 +11,9 @@ import org.springframework.web.bind.annotation.*;
 import com.example.learningproject.model.Student;
 
 import java.util.List;
+import java.util.Optional;
+
+import static com.example.learningproject.dto.CourseDtoMapper.mapStudentDto;
 
 @RestController
 @RequestMapping("/api")
@@ -29,7 +32,7 @@ public class StudentController {
     @GetMapping("/students")
     public List<StudentDto> getAllStudents() {
         logger.info("getAllStudents!");
-        return studentService.findAll().stream().map(x -> new StudentDto(x.getId(), x.getName(), x.getEmail())).toList();
+        return studentService.findAll().stream().map(x -> mapStudentDto(x)).toList();
     }
 
     @GetMapping("/students/{id}")
@@ -37,12 +40,7 @@ public class StudentController {
         logger.info("findOne =" + id);
         var studentOptional = studentService.findById(id);
 
-        if(studentOptional.isEmpty()) {
-            throw new EntityNotFoundException("Student not found", null);
-        }
-
-        var student = studentOptional.get();
-        return new StudentDto(student.getId(), student.getName(), student.getEmail());
+        return getStudentDto(studentOptional);
     }
 
     @GetMapping("/students/name/{name}")
@@ -50,25 +48,17 @@ public class StudentController {
         logger.info("findByName = " + name);
         var studentOptional = this.studentService.findByName(name);
 
-        if(studentOptional.isEmpty()) {
-            throw new EntityNotFoundException("Student not found", null);
-        }
-
-        var student = studentOptional.get();
-        return new StudentDto(student.getId(), student.getName(), student.getEmail());
+        return getStudentDto(studentOptional);
     }
+
+
 
     @GetMapping("/students/email/{email}")
     public StudentDto findByEmail(@PathVariable String email) {
         logger.info("findByEmail = " + email);
         var studentOptional = this.studentService.findByEmail(email);
 
-        if(studentOptional.isEmpty()) {
-            throw new EntityNotFoundException("Student not found", null);
-        }
-
-        var student = studentOptional.get();
-        return new StudentDto(student.getId(), student.getName(), student.getEmail());
+        return getStudentDto(studentOptional);
     }
 
 
@@ -78,8 +68,10 @@ public class StudentController {
         createStudent.setId(0);
         var student = this.studentService.save(createStudent);
         logger.info("created student, id = " + student.getId());
-        return new StudentDto(student.getId(), student.getName(), student.getEmail());
+        return mapStudentDto(student);
     }
+
+
 
     @DeleteMapping("/students/{id}")
     public ResponseEntity delete(@PathVariable Integer id) {
@@ -109,6 +101,17 @@ public class StudentController {
         student.setEmail(studentDto.email());
         student = this.studentService.save(student);
         logger.info("updated student, id = " + student.getId());
-        return new StudentDto(student.getId(), student.getName(), student.getEmail());
+        return mapStudentDto(student);
     }
+
+    private StudentDto getStudentDto(Optional<Student> studentOptional) {
+        if(studentOptional.isEmpty()) {
+            throw new EntityNotFoundException("Student not found", null);
+        }
+
+        var student = studentOptional.get();
+        return mapStudentDto(student);
+    }
+
+
 }
