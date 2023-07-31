@@ -16,6 +16,7 @@ public class Course {
     @Column(name = "TITLE", unique = true)
     private String title;
 
+    @Lob
     @Column(name = "DESCRIPTION")
     private String description;
 

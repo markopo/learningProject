@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import com.example.learningproject.model.Student;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,17 +28,17 @@ public class PrePopulateDatabase {
     }
 
     @PostConstruct
-    public void createInitData() {
+    public void createInitData() throws IOException {
         createStudent("marko", "marko@gmail.com");
         createStudent("kalle", "kalle@gmail.com");
         createStudent("pekka", "pekka@gmail.com");
         createStudent("jussi", "jussi@gmail.com");
 
-        createCourse("java-001", "Java Programming", "Java..");
-        createCourse("csharp-001", "C# Programming", "C# ...");
-        createCourse("javascript-001", "Javascript Programming", "JS ...");
-        createCourse("sql-001", "SQL Programming", "SQL ...");
-        createCourse("html5-001", "HTML 5 coding", "HTML 5 ...");
+        createCourse("java-001", "Java Programming", loadFromFile("java"));
+        createCourse("csharp-001", "C# Programming", loadFromFile("csharp"));
+        createCourse("javascript-001", "Javascript Programming", loadFromFile("javascript"));
+        createCourse("sql-001", "SQL Programming", loadFromFile("sql"));
+        createCourse("html5-001", "HTML 5 coding", loadFromFile("html5"));
 
         var courses = this.courseService.findAll();
         var students = this.studentService.findAll();
@@ -83,5 +86,9 @@ public class PrePopulateDatabase {
         course.setTitle(title);
         course.setDescription(description);
         this.courseService.save(course);
+    }
+
+    private String loadFromFile(String fileName) throws IOException {
+        return new String(Files.readAllBytes(Paths.get("src/main/resources/" + fileName + ".txt")));
     }
 }

@@ -4,11 +4,16 @@ package com.example.learningproject.controllers;
 import com.example.learningproject.dto.CourseDto;
 import com.example.learningproject.exceptions.EntityNotFoundException;
 import com.example.learningproject.model.Course;
+import com.example.learningproject.services.CoursePdfGenerateService;
 import com.example.learningproject.services.CourseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 @RestController
@@ -17,9 +22,12 @@ public class CourseController {
 
     private final CourseService courseService;
 
+    private final CoursePdfGenerateService coursePdfGenerateService;
+
     @Autowired
-    public CourseController(CourseService courseService) {
+    public CourseController(CourseService courseService, CoursePdfGenerateService coursePdfGenerateService) {
         this.courseService = courseService;
+        this.coursePdfGenerateService = coursePdfGenerateService;
     }
 
 
@@ -39,6 +47,28 @@ public class CourseController {
         var course = courseOptional.get();
         return new CourseDto(course.getId(), course.getCourseCode(), course.getTitle(), course.getDescription());
     }
+
+    @GetMapping("/courses/pdf/{id}")
+    public ResponseEntity<InputStreamResource> getCoursePdf(@PathVariable Integer id) {
+        var courseOptional = courseService.findById(id);
+
+        if (courseOptional.isEmpty()) {
+            throw new EntityNotFoundException("Course not found", null);
+        }
+
+        var course = courseOptional.get();
+        ByteArrayInputStream bis = this.coursePdfGenerateService.getPdf(course);
+
+        var headers = new HttpHeaders();
+        headers.add("Content-Disposition", "inline; filename=" + course.getCourseCode() + ".pdf");
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(bis));
+    }
+
 
     @PostMapping("/courses")
     public CourseDto create(@RequestBody CourseDto newCourse) {
