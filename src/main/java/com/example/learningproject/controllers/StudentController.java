@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.learningproject.model.Student;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -44,21 +45,19 @@ public class StudentController {
     }
 
     @GetMapping("/students/name/{name}")
-    public StudentDto findByName(@PathVariable String name) {
+    public List<StudentDto> findByName(@PathVariable String name) {
         logger.info("findByName = " + name);
-        var studentOptional = this.studentService.findByName(name);
-
-        return getStudentDto(studentOptional);
+        var students = this.studentService.findByName(name);
+        return students != null ? students.stream().map(s -> getStudentDto(Optional.of(s))).toList() : new ArrayList<>();
     }
 
 
 
     @GetMapping("/students/email/{email}")
-    public StudentDto findByEmail(@PathVariable String email) {
+    public List<StudentDto> findByEmail(@PathVariable String email) {
         logger.info("findByEmail = " + email);
-        var studentOptional = this.studentService.findByEmail(email);
-
-        return getStudentDto(studentOptional);
+        var students =  this.studentService.findByEmail(email);
+        return students != null ? students.stream().map(s -> getStudentDto(Optional.of(s))).toList() : new ArrayList<>();
     }
 
 

@@ -27,11 +27,11 @@ public class StudentService {
        return this.studentRepository.findById(id);
     }
 
-    public Optional<Student> findByName(String name) {
+    public List<Student> findByName(String name) {
         return this.studentRepository.findStudentByName(name);
     }
 
-    public Optional<Student> findByEmail(String email) {
+    public List<Student> findByEmail(String email) {
         return this.studentRepository.findStudentByEmail(email);
     }
 
