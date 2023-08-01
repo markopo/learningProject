@@ -35,9 +35,7 @@ public class CoursePdfGenerateService {
 
             document.add(new Header("Title", course.getTitle()));
 
-            var cc = new Paragraph(("Course Code: " + course.getCourseCode() + "").toUpperCase(), HEADING_FONT);
-            cc.setAlignment(Element.ALIGN_CENTER);
-            cc.setSpacingAfter(SPACING);
+            var cc = createParaGraph(("Course Code: " + course.getCourseCode() + "").toUpperCase(), true);
             document.add(cc);
 
             var image = getImage(course);
@@ -46,17 +44,13 @@ public class CoursePdfGenerateService {
                 document.add(image);
             }
 
-            var dd = new Paragraph("DESCRIPTION: ", HEADING_FONT);
-            dd.setAlignment(Element.ALIGN_CENTER);
-            dd.setSpacingAfter(SPACING);
+            var dd = createParaGraph("DESCRIPTION: ", true);
             document.add(dd);
 
             var descriptionParaGraphs = course.getDescription().split(System.lineSeparator());
 
             for (String d : descriptionParaGraphs) {
-                var pd = new Paragraph(d);
-                pd.setAlignment(Element.ALIGN_CENTER);
-                pd.setSpacingAfter(SPACING);
+                var pd = createParaGraph(d, false);
                 document.add(pd);
             }
             document.close();
@@ -66,6 +60,13 @@ public class CoursePdfGenerateService {
         }
 
         return new ByteArrayInputStream(out.toByteArray());
+    }
+
+    private Paragraph createParaGraph(String text, Boolean isHeading) {
+        var p = isHeading ? new Paragraph(text, HEADING_FONT) : new Paragraph(text);
+        p.setAlignment(Element.ALIGN_CENTER);
+        p.setSpacingAfter(SPACING);
+        return p;
     }
 
 
