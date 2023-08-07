@@ -40,6 +40,7 @@ public class DemoSecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(configurer ->
                 configurer
+                .requestMatchers(HttpMethod.GET, "/api/search/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/").hasRole("EMPLOYEE")
                 .requestMatchers(HttpMethod.GET, "/api/courses").hasRole("EMPLOYEE")
                 .requestMatchers(HttpMethod.GET, "/api/courses/**").hasRole("EMPLOYEE")
