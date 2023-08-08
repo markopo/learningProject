@@ -71,6 +71,6 @@ public class Student {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
-                '}';
+                "}";
     }
 }
