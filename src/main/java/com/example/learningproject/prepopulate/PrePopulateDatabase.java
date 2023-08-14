@@ -1,14 +1,24 @@
 package com.example.learningproject.prepopulate;
 
+import com.example.learningproject.controllers.StudentController;
+import com.example.learningproject.dto.BookMapper;
+import com.example.learningproject.model.Book;
 import com.example.learningproject.model.Course;
+import com.example.learningproject.services.BookService;
 import com.example.learningproject.services.CourseService;
+import com.example.learningproject.services.GoogleBooksService;
 import com.example.learningproject.services.StudentService;
 import jakarta.annotation.PostConstruct;
+import org.apache.tomcat.util.json.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import com.example.learningproject.model.Student;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URLEncoder;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -21,14 +31,26 @@ public class PrePopulateDatabase {
 
     private final CourseService courseService;
 
+    private final BookService bookService;
+
+    private final GoogleBooksService googleBooksService;
+
+    private final Logger logger = LoggerFactory.getLogger(PrePopulateDatabase.class);
+
+
     @Autowired
-    public PrePopulateDatabase(StudentService studentService, CourseService courseService) {
+    public PrePopulateDatabase(StudentService studentService,
+                               CourseService courseService,
+                               BookService bookService,
+                               GoogleBooksService googleBooksService) {
         this.studentService = studentService;
         this.courseService = courseService;
+        this.bookService = bookService;
+        this.googleBooksService = googleBooksService;
     }
 
     @PostConstruct
-    public void createInitData() throws IOException {
+    public void createInitData() throws IOException, URISyntaxException, ParseException, InterruptedException {
         createStudent("marko", "marko@gmail.com");
         createStudent("kalle", "kalle@gmail.com");
         createStudent("pekka", "pekka@gmail.com");
@@ -70,7 +92,41 @@ public class PrePopulateDatabase {
             }
         }
 
+        saveBooks(courses);
 
+
+    }
+
+    private void saveBooks(List<Course> courses) throws URISyntaxException, IOException, InterruptedException, ParseException {
+        for (Course course :
+                courses) {
+
+          var googleBooks = this.googleBooksService.Search(URLEncoder.encode(course.getTitle()));
+          var booksUnsaved = googleBooks.stream().map(b -> BookMapper.mapToBook(b)).toList();
+          List<Book> courseBooks = new ArrayList<>();
+
+            for (Book book :
+                    booksUnsaved) {
+
+               Book savedBook = null;
+
+               try {
+                   savedBook = this.bookService.save(book);
+               }
+               catch (Exception exception) {
+                   logger.info(exception.getMessage());
+                   savedBook = null;
+               }
+               finally {
+                   if(savedBook != null) {
+                       courseBooks.add(savedBook);
+                   }
+               }
+            }
+
+            course.setBooks(courseBooks);
+            this.courseService.save(course);
+        }
     }
 
     private void createStudent(String name, String email) {

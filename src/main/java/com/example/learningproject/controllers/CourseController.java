@@ -2,6 +2,7 @@ package com.example.learningproject.controllers;
 
 
 import com.example.learningproject.dto.CourseDto;
+import com.example.learningproject.dto.CourseDtoMapper;
 import com.example.learningproject.exceptions.EntityNotFoundException;
 import com.example.learningproject.model.Course;
 import com.example.learningproject.services.CoursePdfGenerateService;
@@ -33,7 +34,7 @@ public class CourseController {
 
     @GetMapping("/courses")
     public List<CourseDto> getAllCourses() {
-        return courseService.findAll().stream().map(x -> new CourseDto(x.getId(), x.getCourseCode(), x.getTitle(), x.getDescription())).toList();
+        return courseService.findAll().stream().map(x -> CourseDtoMapper.mapCourse(x)).toList();
     }
 
     @GetMapping("/courses/{id}")
@@ -45,7 +46,7 @@ public class CourseController {
         }
 
         var course = courseOptional.get();
-        return new CourseDto(course.getId(), course.getCourseCode(), course.getTitle(), course.getDescription());
+        return CourseDtoMapper.mapCourse(course);
     }
 
     @GetMapping("/courses/pdf/{id}")
@@ -75,7 +76,7 @@ public class CourseController {
         var createdCourse = new Course(newCourse.courseCode(), newCourse.title(), newCourse.description());
         createdCourse.setId(0);
         var course = courseService.save(createdCourse);
-        return new CourseDto(course.getId(), course.getCourseCode(), course.getTitle(), course.getDescription());
+        return CourseDtoMapper.mapCourse(course);
     }
 
     @DeleteMapping("/courses/{id}")
@@ -105,7 +106,7 @@ public class CourseController {
         course.setTitle(courseDto.title());
         course.setDescription(courseDto.description());
         course = this.courseService.save(course);
-        return new CourseDto(course.getId(), course.getCourseCode(), course.getTitle(), course.getDescription());
+        return CourseDtoMapper.mapCourse(course);
     }
 
 }

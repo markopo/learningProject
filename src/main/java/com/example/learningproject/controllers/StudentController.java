@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static com.example.learningproject.dto.CourseDtoMapper.mapStudentDto;
+import static com.example.learningproject.dto.StudentDtoMapper.mapStudentDto;
 
 @RestController
 @RequestMapping("/api")

@@ -2,6 +2,8 @@ package com.example.learningproject.model;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "COURSES")
 public class Course {
@@ -19,6 +21,9 @@ public class Course {
     @Lob
     @Column(name = "DESCRIPTION")
     private String description;
+
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<Book> books;
 
     public Course() {}
 
@@ -58,6 +63,14 @@ public class Course {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<Book> getBooks() {
+        return books;
+    }
+
+    public void setBooks(List<Book> books) {
+        this.books = books;
     }
 
     @Override
