@@ -7,6 +7,7 @@ import com.example.learningproject.exceptions.EntityNotFoundException;
 import com.example.learningproject.model.Course;
 import com.example.learningproject.services.CoursePdfGenerateService;
 import com.example.learningproject.services.CourseService;
+import org.apache.tomcat.util.json.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 
 @RestController
@@ -72,10 +75,10 @@ public class CourseController {
 
 
     @PostMapping("/courses")
-    public CourseDto create(@RequestBody CourseDto newCourse) {
+    public CourseDto create(@RequestBody CourseDto newCourse) throws URISyntaxException, IOException, ParseException, InterruptedException {
         var createdCourse = new Course(newCourse.courseCode(), newCourse.title(), newCourse.description());
         createdCourse.setId(0);
-        var course = courseService.save(createdCourse);
+        var course = courseService.create(createdCourse, true);
         return CourseDtoMapper.mapCourse(course);
     }
 

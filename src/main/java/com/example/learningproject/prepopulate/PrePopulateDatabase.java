@@ -92,40 +92,14 @@ public class PrePopulateDatabase {
             }
         }
 
-        saveBooks(courses);
-
+        saveBooksOnCourses(courses);
 
     }
 
-    private void saveBooks(List<Course> courses) throws URISyntaxException, IOException, InterruptedException, ParseException {
+    private void saveBooksOnCourses(List<Course> courses) throws URISyntaxException, IOException, InterruptedException, ParseException {
         for (Course course :
                 courses) {
-
-          var googleBooks = this.googleBooksService.Search(URLEncoder.encode(course.getTitle()));
-          var booksUnsaved = googleBooks.stream().map(b -> BookMapper.mapToBook(b)).toList();
-          List<Book> courseBooks = new ArrayList<>();
-
-            for (Book book :
-                    booksUnsaved) {
-
-               Book savedBook = null;
-
-               try {
-                   savedBook = this.bookService.save(book);
-               }
-               catch (Exception exception) {
-                   logger.info(exception.getMessage());
-                   savedBook = null;
-               }
-               finally {
-                   if(savedBook != null) {
-                       courseBooks.add(savedBook);
-                   }
-               }
-            }
-
-            course.setBooks(courseBooks);
-            this.courseService.save(course);
+           this.courseService.create(course, true);
         }
     }
 
