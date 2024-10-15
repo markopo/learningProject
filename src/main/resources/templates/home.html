@@ -21,6 +21,45 @@
             <input type="submit" value="Create">
         </div>
     </form>
+    <script>
+        const BASE_URL = "http://localhost:8080/api";
+        const USERNAME = "mary";
+        const PASSWORD = "test123";
+
+        const headers = new Headers();
+        // headers.append('Access-Control-Allow-Origin', 'http://localhost:3000');
+        // headers.append('Access-Control-Allow-Credentials', 'true');
+        // headers.append('Access-Control-Allow-Methods', 'GET');
+        // headers.append('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+        headers.append('Authorization', 'Basic ' + btoa(USERNAME + ":" + PASSWORD));
+
+        function getOnfulfilled(response) {
+            if (!response.ok) {
+                console.log('response: ', response);
+                throw new Error('HTTP: ' + response.status);
+            }
+
+            return response.json();
+        }
+
+
+        async function fetchCourses() {
+            const response = await fetch(`${BASE_URL}/courses`, {
+                method: 'GET',
+             //   headers: headers,
+                // mode: 'no-cors'
+            });
+            return getOnfulfilled(response);
+        }
+
+        window.onload = function () {
+            fetchCourses()
+                .then(c => {
+                    console.log('courses: ', c);
+                })
+                .catch(e => console.log('error: ', e));
+        };
+    </script>
 </div>
 </body>
 </html>
